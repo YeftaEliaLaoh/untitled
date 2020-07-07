@@ -2,33 +2,86 @@ package main
 
 import 
 (
+	"encoding/json"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"math/rand"
 	"net/http"
+	"strings"
+    	"strconv"
 	"sync"
 )
 
 type Quest1 struct{
-	tes	string	`json:"name"`
+	Bullet	string
 }
 
-type questHandlers1 struct{
-	sync.Mutex
-	store map[string]Quest1
-}
+func (q *Quest1) getQuestion(w http.ResponseWriter, r *http.Request){ 
 
-func (q *questHandlers1) getQuestion(w http.ResponseWriter, r *http.Request){ 
+	if r.Method != "POST"{
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	w.Write([]byte("method not allowed"))
+	return	
+	}
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil{
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	ct := r.Header.Get("Content-Type")
+	if ct != "application/json" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("need Content-Type 'application/json', but got '%s'", ct)))
+		return
+	}
+	var magazine = rand.Intn(10)
+    	bodyString := string(bodyBytes)
+	dec := json.NewDecoder(strings.NewReader(bodyString))
+
+	    for {
+		var quest1 Quest1
+
+		err := dec.Decode(&quest1)
+		fmt.Println(err)
+		if err == io.EOF {
+		    // all done
+		    break
+		}
+		if err != nil {
+		    log.Fatal(err)
+		}
+		i, err := strconv.Atoi(quest1.Bullet)
+		    if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(fmt.Sprintf("bullet need numeric, error '%s'",err)))
+			return
+		    }
+		if magazine == i{
+		w.Write([]byte("magazine is full"))
+		break
+		} else {
+		w.Write([]byte("magazine is not full\n"))
+		}
+	    }
+
+	
 	w.Header().Add("content-type","application/json")
 	w.WriteHeader(http.StatusOK)
 }
 
-func newQuestion1() *questHandlers1{
-	return &questHandlers1{
-		store: map[string]Quest1{
-		},
+func newQuestion1() *Quest1{
+	return &Quest1{
 	}
 }
 
 type Quest2 struct{
-	tes	string	`json:"name"`
+	order	string
 }
 
 type questHandlers2 struct{
@@ -47,6 +100,7 @@ func newQuestion2() *questHandlers2{
 		},
 	}
 }
+
 
 type Quest3 struct{
 	tes	string	`json:"name"`
