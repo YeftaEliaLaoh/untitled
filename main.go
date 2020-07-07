@@ -7,21 +7,21 @@ import
 )
 
 type Quest1 struct{
-	tes 	string
+	tes	string	`json:"name"`
 }
 
-type questHandlers struct{
+type questHandlers1 struct{
 	sync.Mutex
 	store map[string]Quest1
 }
 
-func (q *questHandlers) getQuestion(w http.ResponseWriter, r *http.Request){ 
-	
-	w.Write([]byte("<html><h1>tes1</h1></html>"))
+func (q *questHandlers1) getQuestion(w http.ResponseWriter, r *http.Request){ 
+	w.Header().Add("content-type","application/json")
+	w.WriteHeader(http.StatusOK)
 }
 
-func newQuestion1() *questHandlers{
-	return &questHandlers{
+func newQuestion1() *questHandlers1{
+	return &questHandlers1{
 		store: map[string]Quest1{
 		},
 	}
