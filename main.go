@@ -154,35 +154,49 @@ func newQuestion2() *questHandlers2{
 	}
 }
 
+func newQuestion3(w http.ResponseWriter, r *http.Request) {
+	var angka = [6][8]int{
+		{1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,1},
+		{1,0,1,1,1,0,0,1},
+		{1,0,0,0,1,0,1,1},
+		{1,2,1,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1},}
+		result := 0
 
-type Quest3 struct{
-	tes	string	`json:"name"`
-}
-
-type questHandlers3 struct{
-	sync.Mutex
-	store map[string]Quest3
-}
-
-func (q *questHandlers3) getQuestion(w http.ResponseWriter, r *http.Request){ 
-	w.Header().Add("content-type","application/json")
+		var x = 4
+		var y = 1
+		for i := 1; i < 5; i++ {
+		if angka[x-i][y] == 0 {
+		for j := 1; j < 5; j++ {
+		if angka[x-i][y+j]== 0 {
+		for k := 1; k < 5; k++ {
+		if angka[x-i+k][y+j]== 0 {	
+    		fmt.Println("%v , %v", x-i+k,y+j)
+		result++;
+		}else{
+		break
+		}
+		}
+		}else{
+		break
+		}
+		}
+		}else{
+		break
+		}
+		}	
+	w.Write([]byte(	fmt.Sprintf("titik yang menjadi kemungkinan lokasi kunci rumah Joni adalah %v \n", result)))	
 	w.WriteHeader(http.StatusOK)
-}
-
-func newQuestion3() *questHandlers3{
-	return &questHandlers3{
-		store: map[string]Quest3{
-		},
-	}
+	
 }
 
 func main() {
 	question1 := newQuestion1()
 	question2 := newQuestion2()
-	question3 := newQuestion3()
 	http.HandleFunc("/question1",question1.getQuestion)
 	http.HandleFunc("/question2",question2.getQuestion)
-	http.HandleFunc("/question3",question3.getQuestion)
+	http.HandleFunc("/question3",newQuestion3)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil{
 		panic(err)
