@@ -33,9 +33,10 @@ Buktikan berapa banyak titik yang menjadi kemungkinan lokasi kunci rumah Joni.
 Jika diketahui angka yang hilang merupakan bilangan bulat positif.
 
 #
-1. /question1 This program handles random request bullets, and is equalize with random magazine data (0-5),
+1. /question1 This api handles random request bullets, and is equalize with random magazine data (0-5),
 if request bullets equal with magazine the magazine is full
-2. /question2 This program handles when the produce is limit , produce will sleep for 1 second and give 1 additional products 
+2. /question2 This api handles when the produce is limit , produce will sleep for 1 second and give 1 additional products 
+3. /question3 This api to find the point that might be the key location of Joni's house
 
 How to test
 1. Run the code go run main.go
@@ -52,3 +53,7 @@ for question no 2
 curl -X POST -H 'Content-Type: application/json' -i http://localhost:8080/question2 --data '{"Order": "1"}
 {"Order": "2"}
 '
+
+for question no 3
+curl -X POST -H 'Content-Type: application/json' -i http://localhost:8080/question3
+
