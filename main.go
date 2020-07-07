@@ -172,7 +172,7 @@ func newQuestion3(w http.ResponseWriter, r *http.Request) {
 		if angka[x-i][y+j]== 0 {
 		for k := 1; k < 5; k++ {
 		if angka[x-i+k][y+j]== 0 {	
-    		fmt.Println("%v , %v", x-i+k,y+j)
+		w.Write([]byte(	fmt.Sprintf("titik yang menjadi kemungkinan lokasi kunci rumah Joni adalah %v , %v \n", x-i+k,y+j)))	
 		result++;
 		}else{
 		break
@@ -186,7 +186,8 @@ func newQuestion3(w http.ResponseWriter, r *http.Request) {
 		break
 		}
 		}	
-	w.Write([]byte(	fmt.Sprintf("titik yang menjadi kemungkinan lokasi kunci rumah Joni adalah %v \n", result)))	
+	w.Write([]byte(	fmt.Sprintf(" banyak titik yang menjadi kemungkinan lokasi kunci rumah Joni adalah %v \n", result)))
+
 	w.WriteHeader(http.StatusOK)
 	
 }
