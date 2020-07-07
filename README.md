@@ -32,6 +32,7 @@ Variable ‘Y’ menandakan angka yang hilang.
 Buktikan berapa banyak titik yang menjadi kemungkinan lokasi kunci rumah Joni.
 Jika diketahui angka yang hilang merupakan bilangan bulat positif.
 
+#
 1. /question1 This program handles random request bullets, and is equalize with random magazine data (0-5),
 if request bullets equal with magazine the magazine is full
 2. /question2 This program handles when the produce is limit , produce will sleep for 1 second and give 1 additional products 
