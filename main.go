@@ -12,6 +12,7 @@ import
 	"strings"
     	"strconv"
 	"sync"
+	"time"
 )
 
 type Quest1 struct{
@@ -81,7 +82,7 @@ func newQuestion1() *Quest1{
 }
 
 type Quest2 struct{
-	order	string
+	Order	string
 }
 
 type questHandlers2 struct{
@@ -90,6 +91,58 @@ type questHandlers2 struct{
 }
 
 func (q *questHandlers2) getQuestion(w http.ResponseWriter, r *http.Request){ 
+	if r.Method != "POST"{
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	w.Write([]byte("method not allowed"))
+	return	
+	}
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil{
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	ct := r.Header.Get("Content-Type")
+	if ct != "application/json" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(fmt.Sprintf("need Content-Type 'application/json', but got '%s'", ct)))
+		return
+	}
+	var stock = rand.Intn(20)
+	var duration int = 1
+    	bodyString := string(bodyBytes)
+	dec := json.NewDecoder(strings.NewReader(bodyString))
+
+	    for {
+		var quest2 Quest2
+
+		err := dec.Decode(&quest2)
+		fmt.Println(err)
+		if err == io.EOF {
+		    // all done
+		    break
+		}
+		if err != nil {
+		    log.Fatal(err)
+		}
+		i, err := strconv.Atoi(quest2.Order)
+		    if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			w.Write([]byte(fmt.Sprintf("bullet need numeric, error '%s'",err)))
+			return
+		    }
+		w.Write([]byte(	fmt.Sprintf("%v left in stock\n", stock)))		
+		stock-=i
+		if(stock <= 1){
+		time.Sleep(time.Duration(duration) * time.Second)
+		stock++
+		w.Write([]byte(	fmt.Sprintf("factory need to slept for %v seconds\n", duration)))		
+		}
+	    }
+
 	w.Header().Add("content-type","application/json")
 	w.WriteHeader(http.StatusOK)
 }
